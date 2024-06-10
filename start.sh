@@ -6,5 +6,16 @@ echo "⟳ Starting PHP-FPM..."
 
 echo "⟳ Starting Nginx..."
 echo "✓ Successfully started"
-certbot --nginx --non-interactive --agree-tos --register-unsafely-without-email --redirect --nginx-ctl /usr/sbin/nginx --work-dir /home/container/letsencrypt --logs-dir /home/container/logs --config-dir /home/container/letsencrypt
+# Generate and install SSL certificates
+echo "⚙️ Generating and installing SSL certificates..."
+
+CERTBOTOPTIONS="--nginx --non-interactive --agree-tos --register-unsafely-without-email --work-dir /home/container/letsencrypt --logs-dir /home/container/logs --config-dir /home/container/letsencrypt --nginx-server-root /home/container/nginx --nginx-ctl /usr/sbin/nginx"
+for file in /home/container/nginx/conf.d/*; do
+    if [[ -f "$file" ]]; then
+        domain=$(grep -oe '(?<=server_name\s).*?(?=\s)' "$file")
+        certbot certonly $CERTBOTOPTIONS -d "$domain"
+    fi
+done
+
+echo "✅ SSL certificates generated and installed successfully!"
 /usr/sbin/nginx -c /home/container/nginx/nginx.conf -p /home/container/
