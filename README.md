@@ -10,7 +10,7 @@ and you can also install composer packages, this can also be done after the inst
 Note: if you want it using a domain then create a reverse proxy on the host 
 
 
-To remove logs from console, open nginx/conf.d/default.conf and uncomment (remove #):
+To remove logs from console, open nginx/sites/default.conf and uncomment (remove #):
 
 ```
 #access_log /home/container/naccess.log;
